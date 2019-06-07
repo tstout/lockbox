@@ -31,3 +31,14 @@
 (defn stop-server []
   (.stop @server)
   (reset! server nil))
+
+
+(set! *print-length* 50)
+
+(require '[lockbox.sys :as sys]
+         '[lockbox.db :as db])
+
+(println (str "Java Runtime: " (-> Runtime
+                                   type
+                                   .getPackage
+                                   .getImplementationVersion)))
