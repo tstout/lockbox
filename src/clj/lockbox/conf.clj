@@ -14,3 +14,8 @@
        io/resource
        slurp
        edn/read-string))
+
+(defn env-var [name]
+  (if-let [val (System/getenv name)]
+    val
+    (throw (Exception. (format "env var %s is not defined - required!" name)))))
