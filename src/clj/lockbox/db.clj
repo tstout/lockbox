@@ -10,6 +10,7 @@
 (defn host-name []
   (.. InetAddress getLocalHost getHostName))
 
+;; TODO - figure out why tcpSSL is not working
 (def h2-server
   (delay
     (let [pwd (env-var "LOCKBOX_PWD")]
@@ -48,7 +49,7 @@
   []
   (let
     [server (->
-              (into-array String ["-tcpAllowOthers" "-tcpSSL"])
+              (into-array String ["-tcpAllowOthers" "-trace"])
               Server/createTcpServer)
      server-ops {:start (fn [] (.start server))
                  :stop  (fn [] (.stop server))}]
