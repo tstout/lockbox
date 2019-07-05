@@ -77,15 +77,8 @@
 (defmethod db-conn :dev [env]
   (mk-h2-pool @h2-server))
 
-
-
-
 ;;
 (def mk-conn (memoize db-conn))
-
-
-
-
 
 (comment
   (in-ns 'lockbox.db)
