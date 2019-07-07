@@ -19,6 +19,7 @@
                  [com.taoensso/timbre "4.10.0"]
                  [org.clojure/java.jdbc "0.7.9"]
                  [com.h2database/h2 "1.4.197"]
+                 [cljs-http "0.1.39"]
                  [venantius/accountant "0.2.4"
                   :exclusions [org.clojure/tools.reader]]]
 
