@@ -15,18 +15,27 @@
 
 (defn tag-edit [id]
   (let [p @(r/track tag id)]
-    [:div
-     [:input {:value     (:name p)
-              :on-change #(emit [:set-tag id (.-target.value %)])}]]))
+    [:tr
+     [:td id]
+     [:td
+      [:input {:value     (:name p)
+              :on-change #(emit [:set-tag id (.-target.value %)])}]]
+     [:td
+      "todo"]]))
 
 (defn edit-tags []
   (let [ids @(r/track tag-keys)]
     [:div
-     [tag-list]
-     (for [i ids]
-       ^{:key i} [tag-edit i])
+     [:table
+      [:thead
+       [:th "Id"]
+       [:th "Name"]
+       [:th "Description"]]
+      [:tbody
+       (for [i ids]
+         ^{:key i} [tag-edit i])]
      [:input {:type     'button
               :value    "Add Tag"
-              :on-click #(emit [:add-tag])}]]))
+              :on-click #(emit [:add-tag])}]]]))
 
 
