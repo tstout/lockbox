@@ -19,7 +19,7 @@
      [:td id]
      [:td
       [:input {:value     (:name p)
-              :on-change #(emit [:set-tag id (.-target.value %)])}]]
+               :on-change #(emit [:set-tag id (.-target.value %)])}]]
      [:td
       "todo"]]))
 
@@ -28,14 +28,15 @@
     [:div
      [:table
       [:thead
-       [:th "Id"]
-       [:th "Name"]
-       [:th "Description"]]
+       [:tr
+        [:th "Id"]
+        [:th "Name"]
+        [:th "Description"]]]
       [:tbody
        (for [i ids]
-         ^{:key i} [tag-edit i])]
-     [:input {:type     'button
-              :value    "Add Tag"
-              :on-click #(emit [:add-tag])}]]]))
+         ^{:key i} [tag-edit i])]]
+      [:input {:type     'button
+               :value    "Add Tag"
+               :on-click #(emit [:add-tag])}]]))
 
 
