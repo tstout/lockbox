@@ -20,10 +20,14 @@
   (-> @(r/track tags)
       (get id)))
 
-(defn event-handler [state [event-name id value]]
+(defn event-handler
+  "This app is simple enough that this type of event handling might be just barely good
+  enough. A multi-method approach might scale better."
+  [state [event-name id value]]
   (case event-name
     :add-tag (assoc-in state [:tags (next-tag-id)] {:name value :desc ""})
-    :set-tag (assoc-in state [:tags id :name] value)
+    :set-tag-name (assoc-in state [:tags id :name] value)
+    :set-tag-desc (assoc-in state [:tags id :desc] value)
     state))
 
 (defn emit [e]

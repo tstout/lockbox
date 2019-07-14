@@ -13,15 +13,22 @@
      (for [i ids]
        ^{:key i} [tag-comp i])]))
 
+(defn cell-edit
+  ""
+  [opts]
+  {:pre [map? opts]}
+  (let [{:keys [event id tag-row tag-element]} opts]
+    [:input {:value     (tag-element tag-row)
+             :on-change #(emit [event id (.-target.value %)])}]))
+
 (defn tag-edit [id]
-  (let [p @(r/track tag id)]
+  (let [t @(r/track tag id)]
     [:tr
      [:td id]
      [:td
-      [:input {:value     (:name p)
-               :on-change #(emit [:set-tag id (.-target.value %)])}]]
+      [cell-edit {:event :set-tag-name :id id :tag-row t :tag-element :name}]]
      [:td
-      "todo"]]))
+      [cell-edit {:event :set-tag-desc :id id :tag-row t :tag-element :desc}]]]))
 
 (defn edit-tags []
   (let [ids @(r/track tag-keys)]
@@ -35,8 +42,8 @@
       [:tbody
        (for [i ids]
          ^{:key i} [tag-edit i])]]
-      [:input {:type     'button
-               :value    "Add Tag"
-               :on-click #(emit [:add-tag])}]]))
+     [:input {:type     'button
+              :value    "+"
+              :on-click #(emit [:add-tag])}]]))
 
 
