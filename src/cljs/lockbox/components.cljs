@@ -28,7 +28,9 @@
      [:td
       [cell-edit {:event :set-tag-name :id id :tag-row t :tag-element :name}]]
      [:td
-      [cell-edit {:event :set-tag-desc :id id :tag-row t :tag-element :desc}]]]))
+      [cell-edit {:event :set-tag-desc :id id :tag-row t :tag-element :desc}]]
+     [:td
+      [:input {:type 'button :value "-" :on-click #(emit [:rm-tag id])}]]]))
 
 (defn edit-tags []
   (let [ids @(r/track tag-keys)]

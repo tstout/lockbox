@@ -28,6 +28,7 @@
     :add-tag (assoc-in state [:tags (next-tag-id)] {:name value :desc ""})
     :set-tag-name (assoc-in state [:tags id :name] value)
     :set-tag-desc (assoc-in state [:tags id :desc] value)
+    :rm-tag (update-in state [:tags] dissoc id)
     state))
 
 (defn emit [e]
