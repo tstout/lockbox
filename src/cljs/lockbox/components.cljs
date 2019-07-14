@@ -19,7 +19,8 @@
   {:pre [map? opts]}
   (let [{:keys [event id tag-row tag-element]} opts]
     [:input {:value     (tag-element tag-row)
-             :on-change #(emit [event id (.-target.value %)])}]))
+             :on-change #(emit [event id (.-target.value %)])
+             :on-blur #(emit [:tag-blur id])}]))
 
 (defn tag-edit [id]
   (let [t @(r/track tag id)]

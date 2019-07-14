@@ -4,8 +4,8 @@
 
 (def app-state (r/atom
                  {:tags
-                  {1 {:name "work" :desc "work-related stuff"}
-                   2 {:name "banking" :desc "bank-related stuff"}}}))
+                  {1 {:name "work" :desc "work-related stuff" :dirty false}
+                   2 {:name "banking" :desc "bank-related stuff" :dirty false}}}))
 
 
 (defn tags []
@@ -26,9 +26,23 @@
   [state [event-name id value]]
   (case event-name
     :add-tag (assoc-in state [:tags (next-tag-id)] {:name value :desc ""})
-    :set-tag-name (assoc-in state [:tags id :name] value)
-    :set-tag-desc (assoc-in state [:tags id :desc] value)
+    :set-tag-name (->
+                    state
+                    (assoc-in [:tags id :name] value)
+                    (assoc-in [:tags id :dirty] true))
+    :set-tag-desc (->
+                    state
+                    (assoc-in [:tags id :desc] value)
+                    (assoc-in [:tags id :dirty] true))
     :rm-tag (update-in state [:tags] dissoc id)
+    :tag-blur (do
+                (prn (str "onBlur " id))
+                (if (get-in state [:tags id :dirty])
+                  ;; TODO - fire async IO command...
+                  (do
+                    (prn "Should update/save")
+                    (assoc-in state [:tags id :dirty] false))
+                  state))
     state))
 
 (defn emit [e]
