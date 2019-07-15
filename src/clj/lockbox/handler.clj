@@ -1,9 +1,12 @@
 (ns lockbox.handler
   (:require
+    [lockbox.db-io :as db-io]
     [reitit.ring :as reitit-ring]
     [lockbox.middleware :refer [middleware]]
     [hiccup.page :refer [include-js include-css html5]]
-    [config.core :refer [env]]))
+    [config.core :refer [env]]
+    [lockbox.db-io :as db-io]
+    [clojure.edn :as edn]))
 
 (def mount-target
   [:div#app
@@ -34,10 +37,18 @@
      :headers {"Content-Type" "text/html"}
      :body    (loading-page)}))
 
+(defn next-seq-handler [request]
+  (do
+    {:status  200
+     :headers {"Content-Type" "application/json"}
+     :body    (let [{:keys [seq-name env]} (edn/read-string (-> request :body slurp))]
+                {:next-seq (db-io/next-seq-val seq-name env)})}))
+
 (def app
   (reitit-ring/ring-handler
     (reitit-ring/router
-      [["/" {:get {:handler index-handler}}]
+      [["/next-seq" {:post {:handler next-seq-handler}}]
+       ["/" {:get {:handler index-handler}}]
        ["/items"
         ["" {:get {:handler index-handler}}]
         ["/:item-id" {:get {:handler    index-handler

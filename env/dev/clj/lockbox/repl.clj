@@ -37,7 +37,8 @@
 
 (require '[lockbox.sys :as sys]
          '[lockbox.db :as db]
-         '[lockbox.conf :as conf])
+         '[lockbox.conf :as conf]
+         '[lockbox.db-io :as db-io])
 
 (println (str "Java Runtime: " (-> Runtime
                                    type

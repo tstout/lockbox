@@ -8,7 +8,9 @@ create table LOGS (
   ,msg       varchar(4096) not null
 );
 
-create sequence ACCOUNTS_SEQ start with 0 increment by 1;
+create sequence ACCOUNTS_SEQ start with 1 increment by 1;
+create sequence TAGS_SEQ start with 1 increment by 1;
+
 
 create table ACCOUNTS (
     account_id int primary key not null
