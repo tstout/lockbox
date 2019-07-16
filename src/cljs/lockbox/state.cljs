@@ -20,12 +20,21 @@
   (-> @(r/track tags)
       (get id)))
 
+(declare event-handler)
+
+(defn emit [e]
+  (js/console.log "Handling event" (str e))
+  (r/rswap! app-state event-handler e))
+
 (defn event-handler
   "This app is simple enough that this type of event handling might be just barely good
   enough. A multi-method approach might scale better."
   [state [event-name id value]]
   (case event-name
-    :add-tag (assoc-in state [:tags (next-tag-id)] {:name value :desc ""})
+    :tag-seq-avail (assoc-in state [:tags id] {:name "" :desc "" :dirty true})
+    :add-tag (do
+               (next-tag-id (fn [val] (emit [:tag-seq-avail val])))
+               state)
     :set-tag-name (->
                     state
                     (assoc-in [:tags id :name] value)
@@ -45,6 +54,3 @@
                   state))
     state))
 
-(defn emit [e]
-  (js/console.log "Handling event" (str e))
-  (r/rswap! app-state event-handler e))

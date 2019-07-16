@@ -8,6 +8,8 @@
     [lockbox.db-io :as db-io]
     [clojure.edn :as edn]))
 
+;; TODO - add proper logging here
+
 (def mount-target
   [:div#app
    [:h2 "Welcome to lockbox"]
@@ -40,9 +42,15 @@
 (defn next-seq-handler [request]
   (do
     {:status  200
-     :headers {"Content-Type" "application/json"}
+     ;;:headers {"Content-Type" "application/json"}
      :body    (let [{:keys [seq-name env]} (edn/read-string (-> request :body slurp))]
-                {:next-seq (db-io/next-seq-val seq-name env)})}))
+                (str {:next-seq (db-io/next-seq-val seq-name env)}))}))
+
+(defn add-tag-handler [request]
+  {:status 200
+   :headers {"Content-Type" "application/json"}
+   :body {}})
+
 
 (def app
   (reitit-ring/ring-handler
