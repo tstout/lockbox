@@ -46,16 +46,20 @@
      :body    (let [{:keys [seq-name env]} (edn/read-string (-> request :body slurp))]
                 (str {:next-seq (db-io/next-seq-val seq-name env)}))}))
 
-(defn add-tag-handler [request]
+(defn update-tag-handler [request]
   {:status 200
-   :headers {"Content-Type" "application/json"}
+   ;;:headers {"Content-Type" "application/json"}
    :body {}})
 
+(defn save-tag-handler [request]
+  (db-io/upsert-tag (edn/read-string (-> request :body slurp)))
+      {:status 200})
 
 (def app
   (reitit-ring/ring-handler
     (reitit-ring/router
-      [["/next-seq" {:post {:handler next-seq-handler}}]
+      [["/save-tag" {:post {:handler save-tag-handler}}]
+       ["/next-seq" {:post {:handler next-seq-handler}}]
        ["/" {:get {:handler index-handler}}]
        ["/items"
         ["" {:get {:handler index-handler}}]

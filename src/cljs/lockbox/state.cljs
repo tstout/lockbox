@@ -1,11 +1,12 @@
 (ns lockbox.state
   (:require [reagent.core :as r]
-            [lockbox.io :refer [next-tag-id next-account-id]]))
+            [lockbox.io :refer [next-tag-id next-account-id save-tag]]))
 
 (def app-state (r/atom
-                 {:tags
-                  {1 {:name "work" :desc "work-related stuff" :dirty false}
-                   2 {:name "banking" :desc "bank-related stuff" :dirty false}}}))
+                 {:env :dev
+                  :tags
+                       {1 {:name "work" :desc "work-related stuff" :dirty false}
+                        2 {:name "banking" :desc "bank-related stuff" :dirty false}}}))
 
 
 (defn tags []
@@ -49,7 +50,8 @@
                 (if (get-in state [:tags id :dirty])
                   ;; TODO - fire async IO command...
                   (do
-                    (prn "Should update/save")
+                    (prn (str "Should update/save" (get-in state [:tags id])))
+                    (save-tag (merge {:id id :env (:env state)} (get-in state [:tags id])))
                     (assoc-in state [:tags id :dirty] false))
                   state))
     state))
