@@ -41,24 +41,26 @@
 
 (defn next-seq-handler [request]
   (do
-    {:status  200
+    {:status 200
      ;;:headers {"Content-Type" "application/json"}
-     :body    (let [{:keys [seq-name env]} (edn/read-string (-> request :body slurp))]
-                (str {:next-seq (db-io/next-seq-val seq-name env)}))}))
-
-(defn update-tag-handler [request]
-  {:status 200
-   ;;:headers {"Content-Type" "application/json"}
-   :body {}})
+     :body   (let [{:keys [seq-name env]} (edn/read-string (-> request :body slurp))]
+               (str {:next-seq (db-io/next-seq-val seq-name env)}))}))
 
 (defn save-tag-handler [request]
   (db-io/upsert-tag (edn/read-string (-> request :body slurp)))
-      {:status 200})
+  {:status 200})
+
+(defn rm-tag-handler [request]
+  (db-io/delete-from (merge
+                       (edn/read-string (-> request :body slurp))
+                       {:table "tags" :id-col "tag_id"}))
+  {:status 200})
 
 (def app
   (reitit-ring/ring-handler
     (reitit-ring/router
       [["/save-tag" {:post {:handler save-tag-handler}}]
+       ["/rm-tag" {:delete {:handler rm-tag-handler}}]
        ["/next-seq" {:post {:handler next-seq-handler}}]
        ["/" {:get {:handler index-handler}}]
        ["/items"

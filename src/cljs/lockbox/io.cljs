@@ -5,7 +5,7 @@
     [cljs.core.async :refer [<! put! pub sub chan <! >! timeout close!]]
     [cljs-http.client :as http]))
 
-
+;; TODO Need to fix hardcoded env
 
 (defn err-check [response]
   ;;
@@ -13,14 +13,18 @@
   ;;
   )
 
-
 (defn next-tag-id [state-fn]
   (go
     (let [response (<! (http/post "/next-seq" {:edn-params {:seq-name "tags_seq" :env :dev}}))
           edn-resp (edn/read-string (:body response))
           next-val (:next-seq edn-resp)]
-      (js/console.log (str "response is ----->" (:body response)))
       (state-fn next-val))))
+
+(defn rm-tag [id state-fn]
+  (go
+    (let [response (<! (http/delete "/rm-tag" {:edn-params {:id id :env :dev}}))
+          edn-resp (edn/read-string (:body response))]
+      (state-fn id))))
 
 (defn save-tag [opts]
   {:pre [(map? opts)]}

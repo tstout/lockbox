@@ -16,7 +16,7 @@
       :value)))
 
 (defn upsert-tag
-  "Upsert a new tag row"
+  "Upsert a tag row"
   [opts]
   {:pre [(map? opts)]}
   (let [{:keys [name desc id env]} opts]
@@ -31,12 +31,22 @@
                       name
                       desc]))))
 
+(defn delete-from [opts]
+  {:pre [(map? opts)]}
+  (let [{:keys [table id env id-col]} opts
+        sql (format "delete from %s where %s = ?" table, id-col)]
+    (log/infof "deleting tag with id %d" id)
+    (jdbc/with-db-transaction
+      [conn (mk-conn env)]
+      (jdbc/execute! conn [sql id]))))
+
 
 (comment
   (def id (db-io/next-seq-val "tags_seq" :dev))
 
   (db-io/upsert-tag {:id id :name "sample" :desc "sampel-desc" :env :dev})
 
+  (db-io/delete-from {:table "tags" :env :dev :id 119 :id-col "tag_id"})
   )
 
 
