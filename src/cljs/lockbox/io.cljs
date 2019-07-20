@@ -32,6 +32,20 @@
     (let [response (<! (http/post "/save-tag" {:edn-params opts}))]
       (err-check response))))
 
+(defn xfrm-tags
+  ([] {})
+  ([acc v]
+   (assoc acc (v :tag_id) (select-keys v [:name :description]))))
+
+(defn fetch-tags [state-fn]
+  (go
+    (let [response (<! (http/get "/fetch-tags/dev"))
+          edn-resp (edn/read-string (:body response))
+          decorated-resp (map (fn [tag] (merge {:dirty false} tag))
+                              edn-resp)
+          x-tags (reduce xfrm-tags {} decorated-resp)]
+      (state-fn x-tags))))
+
 ;; TODO - call DB to get next sequence
 (defn next-account-id []
   (rand-int 1000))

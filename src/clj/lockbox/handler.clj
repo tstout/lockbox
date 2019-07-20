@@ -56,10 +56,17 @@
                        {:table "tags" :id-col "tag_id"}))
   {:status 200})
 
+(defn fetch-tag-handler [request]
+  (let [env (-> request :path-params :env keyword)]
+    {:status 200
+     :body  (-> (db-io/fetch-tags env) vec str)}))
+
 (def app
   (reitit-ring/ring-handler
     (reitit-ring/router
-      [["/save-tag" {:post {:handler save-tag-handler}}]
+      [["/fetch-tags"
+        ["/:env" {:get {:handler fetch-tag-handler}}]]
+       ["/save-tag" {:post {:handler save-tag-handler}}]
        ["/rm-tag" {:delete {:handler rm-tag-handler}}]
        ["/next-seq" {:post {:handler next-seq-handler}}]
        ["/" {:get {:handler index-handler}}]

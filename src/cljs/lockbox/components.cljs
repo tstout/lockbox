@@ -20,7 +20,7 @@
   (let [{:keys [event id tag-row tag-element]} opts]
     [:input {:value     (tag-element tag-row)
              :on-change #(emit [event id (.-target.value %)])
-             :on-blur #(emit [:tag-blur id])}]))
+             :on-blur   #(emit [:tag-blur id])}]))
 
 (defn tag-edit [id]
   (let [t @(r/track tag id)]
@@ -29,7 +29,7 @@
      [:td
       [cell-edit {:event :set-tag-name :id id :tag-row t :tag-element :name}]]
      [:td
-      [cell-edit {:event :set-tag-desc :id id :tag-row t :tag-element :desc}]]
+      [cell-edit {:event :set-tag-desc :id id :tag-row t :tag-element :description}]]
      [:td
       [:input {:type 'button :value "-" :on-click #(emit [:rm-tag id])}]]]))
 

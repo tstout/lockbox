@@ -4,6 +4,7 @@
     [reagent.session :as session]
     [reitit.frontend :as reitit]
     [clerk.core :as clerk]
+    [lockbox.state :refer [emit]]
     [lockbox.components :refer [edit-tags]]
     [accountant.core :as accountant]))
 
@@ -50,6 +51,7 @@
                (range 1 60))]]))
 
 (defn tags-page []
+  (emit [:maybe-load-tags])
   (fn []
     [:span.main
      [:div
