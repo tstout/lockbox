@@ -3,12 +3,12 @@
             [lockbox.io :refer [next-tag-id next-account-id save-tag rm-tag fetch-tags]]))
 
 (def app-state (r/atom
-                 {:env :dev
+                 {:env  :dev
                   :tags {}}))
 
 
-                       ;{1 {:name "work" :desc "work-related stuff" :dirty false}
-                       ; 2 {:name "banking" :desc "bank-related stuff" :dirty false}}}))
+;{1 {:name "work" :desc "work-related stuff" :dirty false}
+; 2 {:name "banking" :desc "bank-related stuff" :dirty false}}}))
 
 
 (defn tags []
