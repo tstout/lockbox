@@ -14,7 +14,7 @@ create sequence TAGS_SEQ start with 1 increment by 1;
 
 create table ACCOUNTS (
     account_id int primary key not null
-    ,name varchar not null
+    ,name varchar(256) not null
     ,description varchar(1000)
     ,user varchar(256)
     ,pass varchar(256)
@@ -22,7 +22,7 @@ create table ACCOUNTS (
 
 create table BANKS (
     account_id int primary key
-    ,bankaccount_id varchar not null
+    ,bankaccount_id varchar(256) not null
     ,routing varchar(256)
     ,client_id varchar(256)
     ,FOREIGN KEY (account_id) REFERENCES ACCOUNTS(account_id)

@@ -37,11 +37,25 @@
   ([acc v]
    (assoc acc (v :tag_id) (merge {:dirty false} (select-keys v [:name :description])))))
 
+;; TODO - need to deal with setting env properly here...
+
 (defn fetch-tags [state-fn]
   (go
     (let [response (<! (http/get "/fetch-tags/dev"))
           edn-resp (edn/read-string (:body response))
           x-tags (reduce xfrm-tags {} edn-resp)]
+      (state-fn x-tags))))
+
+(defn xfrm-accounts
+  ([] {})
+  ([acc v]
+   (assoc acc (v :tag_id) (merge {:dirty false} (select-keys v [:name :description])))))
+
+(defn fetch-accounts [state-fn]
+  (go
+    (let [response (<! (http/get "/fetch-accounts/dev"))
+          edn-resp (edn/read-string (:body response))
+          x-tags (reduce xfrm-accounts {} edn-resp)]
       (state-fn x-tags))))
 
 ;; TODO - call DB to get next sequence

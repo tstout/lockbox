@@ -3,8 +3,9 @@
             [lockbox.io :refer [next-tag-id next-account-id save-tag rm-tag fetch-tags]]))
 
 (def app-state (r/atom
-                 {:env  :dev
-                  :tags {}}))
+                 {:env      :dev
+                  :tags     {}
+                  :accounts {}}))
 
 
 ;{1 {:name "work" :desc "work-related stuff" :dirty false}
@@ -23,6 +24,18 @@
   (-> @(r/track tags)
       (get id)))
 
+(defn accounts []
+  (:accounts @app-state))
+
+(defn account-keys []
+  (-> @(r/track accounts)
+      keys
+      sort))
+
+(defn account [id]
+  (-> @(r/track accounts)
+      (get id)))
+
 (declare event-handler)
 
 (defn emit [e]
@@ -36,11 +49,17 @@
   [state [event-name id value]]
   (case event-name
     :tags-loaded (assoc-in state [:tags] value)
+    :accounts-loaded (assoc-in state [:accounts] value)
     :maybe-load-tags (do
                        (when (empty? (state :tags))
                          (fetch-tags (fn [response]
                                        (emit [:tags-loaded 1 response]))))
                        state)
+    :maybe-load-accounts (do
+                           (when (empty? (state :accounts))
+                             (fetch-tags (fn [response]
+                                           (emit [:accounts-loaded 1 response]))))
+                           state)
     :tag-seq-avail (assoc-in state [:tags id] {:name "" :description "" :dirty true})
     :add-tag (do
                (next-tag-id (fn [val] (emit [:tag-seq-avail val])))

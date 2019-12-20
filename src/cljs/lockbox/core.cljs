@@ -5,7 +5,7 @@
     [reitit.frontend :as reitit]
     [clerk.core :as clerk]
     [lockbox.state :refer [emit]]
-    [lockbox.components :refer [edit-tags]]
+    [lockbox.components :refer [edit-tags edit-accounts]]
     [accountant.core :as accountant]))
 
 ;; -------------------------
@@ -37,6 +37,7 @@
      [:ul
       [:li [:a {:href (path-for :items)} "Items of lockbox"]]
       [:li [:a {:href (path-for :tags)} "Tags"]]
+      [:li [:a {:href (path-for :accounts)} "Accounts"]]
       [:li [:a {:href "/borken/link"} "Borken link"]]]]))
 
 
@@ -56,6 +57,14 @@
     [:span.main
      [:div
       [edit-tags]]]))
+
+(defn accounts-page []
+  (emit [:maybe-load-accounts])
+  (fn []
+    [:span.main
+     [:div
+      [edit-accounts]]]))
+
 
 (defn item-page []
   (fn []
@@ -77,6 +86,7 @@
 (defn page-for [route]
   (case route
     :index #'home-page
+    :accounts #'accounts-page
     :tags #'tags-page
     :about #'about-page
     :items #'items-page

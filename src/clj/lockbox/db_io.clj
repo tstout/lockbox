@@ -48,6 +48,32 @@
       conn
       (jdbc/query "select tag_id, name, description from tags"))))
 
+(defn upsert-account
+  "Upsert an account row"
+  [opts]
+  {:pre [(map? opts)]}
+  (let [{:keys [name description id env user pass]} opts]
+    (log/infof "updating account with id %d" id)
+    (jdbc/with-db-transaction
+      [conn (mk-conn env)]
+      (jdbc/execute! conn
+                     ["MERGE INTO accounts(account_id, name, description, user, pass)
+                      KEY(account_id)
+                      VALUES (?, ?, ?, ?, ?)"
+                      id
+                      name
+                      description
+                      user
+                      pass]))))
+
+;; TODO - need to enhance this query to handle selecting any sub type accounts...
+(defn fetch-accounts [env]
+  (log/infof "fetching accounts for env %s" env)
+  (jdbc/with-db-connection
+    [conn (mk-conn env)]
+    (->
+      conn
+      (jdbc/query "select account_id, name, description, user, pass from accounts"))))
 
 (comment
   (def id (next-seq-val "tags_seq" :dev))
